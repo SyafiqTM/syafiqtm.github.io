@@ -29,3 +29,10 @@ Thumbs.db
 # Environment
 .env
 .env.local
+.env.*.local
+
+# Keep example files
+!.env.example
+!.env.development
+!.env.production
+.env.local
