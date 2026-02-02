@@ -64,9 +64,9 @@ body {
 }
 
 .bio {
-    font-size: 1.125rem;
+    font-size: 1rem;
     line-height: 1.7;
-    opacity: 0.95;
+    opacity: 0.75;
 }
 
 /* Main Content */
@@ -97,6 +97,16 @@ body {
     height: 4px;
     background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
     border-radius: 2px;
+}
+
+.section-title-github {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    color: var(--text-primary);
+    position: relative;
+    padding-bottom: 0.75rem;
+    text-align: center;
 }
 
 /* Work Experience Timeline */
