@@ -58,7 +58,8 @@
         <div
           v-for="post in paginatedPosts"
           :key="post.id"
-          class="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-gray-200"
+          class="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-gray-200 cursor-pointer"
+          @click="$router.push(`/blog/${post.id}`)"
         >
           <div class="p-6">
             <div class="flex items-center gap-2 mb-3">
@@ -71,7 +72,7 @@
               </span>
             </div>
 
-            <h3 class="text-xl font-bold text-gray-900 mb-2 hover:text-blue-600 cursor-pointer">
+            <h3 class="text-xl font-bold text-gray-900 mb-2 hover:text-blue-600 cursor-pointer" @click="$router.push(`/blog/${post.id}`)">
               {{ post.title }}
             </h3>
 

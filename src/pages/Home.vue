@@ -4,9 +4,9 @@
       <div class="profile">
         <div class="profile-info">
           <h1 class="name">Mohammad Syafiq</h1>
-          <p class="title">Full-Stack Developer</p>
+          <p class="title">Full-Stack & Cloud Developer</p>
           <p class="bio">
-            Passionate about creating elegant, user-friendly web applications with modern technologies.
+            Experienced Full Stack & Cloud Developer with 7+ years of expertise in building scalable microservices, cloud-native applications, and enterprise platforms. Strong proficiency in Node.js, TypeScript, Angular/React, AWS, Docker, CI/CD, and system architecture.
           </p>
         </div>
       </div>
@@ -21,32 +21,110 @@
           <div class="experience-card">
             <div class="experience-header">
               <div class="experience-title-group">
-                <h3 class="experience-title">Specialist/Full Stack Developer</h3>
+                <h3 class="experience-title">Portal Developer / Specialist</h3>
                 <p class="company">Maxis Broadband Sdn Bhd</p>
               </div>
-              <span class="period">2022 - Present</span>
+              <span class="period">Oct 2022 - Present</span>
             </div>
             <ul class="experience-details">
-              <li>Led development of responsive web applications using React and Node.js</li>
-              <li>Architected and implemented RESTful APIs serving 10,000+ daily users</li>
-              <li>Mentored junior developers and conducted code reviews</li>
-              <li>Improved application performance by 40% through optimization techniques</li>
+              <li>Developed and maintained scalable microservices using Node.js, Express, TypeScript, and modern frontend frameworks (Angular, React, Vue)</li>
+              <li>Built and implemented RESTful APIs, event-driven architectures, and distributed systems</li>
+              <li>Containerized applications using Docker, created multi-stage Dockerfiles, and automated AWS deployments via TeamCity CI/CD and Terraform</li>
+              <li>Migrated and developed microservices with GitLab CI/CD, enabling automated build, test, and deployment pipelines</li>
+              <li>Hands-on with AWS services including ALB/NLB, API Gateway, Lambda, ECS (Fargate/EC2), Secrets Manager, RDS, S3, DynamoDB, CloudWatch, IAM, VPC</li>
+              <li>Configured Nginx reverse proxy, security hardening, and production optimizations</li>
+              <li>Integrated Google Cloud Run with Firestore and used Vertex AI for chatbot development</li>
+              <li>Implemented OAuth2 authentication for Maxis Identity, delivering secure customer login and seamless identity verification</li>
+            </ul>
+            <div class="mt-4 p-4 bg-green-50 border-l-4 border-green-500 rounded">
+              <p class="text-sm font-semibold text-green-800 mb-1">Key Achievements:</p>
+              <ul class="text-sm text-green-700 space-y-1">
+                <li>🏆 Awarded Team Award: GitLab Migration Project (Q4 2024)</li>
+                <li>🏆 Awarded Team Award: Maxis Enterprise Device Portal (Q4 2024)</li>
+                <li>💰 Key role in AWS region migration (Singapore → Malaysia), reducing cloud cost by 30% and improving latency</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="experience-card">
+            <div class="experience-header">
+              <div class="experience-title-group">
+                <h3 class="experience-title">Web Tech Lead</h3>
+                <p class="company">AxelCloud Technologies Sdn Bhd</p>
+              </div>
+              <span class="period">Mar 2022 - Aug 2022</span>
+            </div>
+            <ul class="experience-details">
+              <li>Deployed live clinic/hospital information system using AWS resources</li>
+              <li>Built company and CURAX websites using Docker + AWS</li>
+              <li>Developed a government system for Malaysia Productivity Corporation (MPC) launched by YB Dato' Seri Mohamed Azmin Ali</li>
+              <li>Setup mail servers and broadcast systems for Academy in Factory (AiF)</li>
+              <li>Provided workshops, training, and end-user support for MPC projects</li>
             </ul>
           </div>
 
           <div class="experience-card">
             <div class="experience-header">
               <div class="experience-title-group">
-                <h3 class="experience-title">Full Stack Developer</h3>
-                <p class="company">Digital Innovations Ltd.</p>
+                <h3 class="experience-title">Full-Stack Developer</h3>
+                <p class="company">Digital Venus Sdn Bhd</p>
               </div>
-              <span class="period">2020 - 2022</span>
+              <span class="period">Jun 2021 - Feb 2022</span>
             </div>
             <ul class="experience-details">
-              <li>Developed full-stack web applications using JavaScript, Python, and SQL</li>
-              <li>Implemented CI/CD pipelines reducing deployment time by 60%</li>
-              <li>Collaborated with UX designers to create intuitive user interfaces</li>
-              <li>Maintained and enhanced legacy codebases</li>
+              <li>Developed mobile apps using Ionic v5</li>
+              <li>Built APIs via Node.js LoopBack (TypeScript) with PostgreSQL</li>
+              <li>Deployed backend services on AWS Elastic Beanstalk</li>
+              <li>Developed website integrated with iPay88 payment gateway</li>
+              <li>Wrote Angular unit tests for Ionic components</li>
+            </ul>
+          </div>
+
+          <div class="experience-card">
+            <div class="experience-header">
+              <div class="experience-title-group">
+                <h3 class="experience-title">Web / Back-End Developer</h3>
+                <p class="company">Poplook Sdn Bhd</p>
+              </div>
+              <span class="period">Aug 2018 - May 2021</span>
+            </div>
+            <ul class="experience-details">
+              <li>Oversaw product backlog, database backups, and e-commerce enhancements</li>
+              <li>Maintained Poplook Prestashop e-commerce platform and integrated multiple plugins</li>
+              <li>Deployed POS systems for new branches</li>
+              <li>Implemented split payment feature similar to SPayLater</li>
+              <li>Managed product syncing through NetSuite, enabling store availability visibility</li>
+            </ul>
+          </div>
+
+          <div class="experience-card">
+            <div class="experience-header">
+              <div class="experience-title-group">
+                <h3 class="experience-title">Network Engineer Trainee</h3>
+                <p class="company">Telekom Malaysia Berhad</p>
+              </div>
+              <span class="period">Aug 2017 - Aug 2018</span>
+            </div>
+            <ul class="experience-details">
+              <li>Documented meetings for server/rack installation in major data centers</li>
+              <li>Assisted in port configuration, cabling, and hardware mounting</li>
+              <li>Supported server and NetApp storage installation</li>
+              <li>Developed internal document directory portal</li>
+            </ul>
+          </div>
+
+          <div class="experience-card">
+            <div class="experience-header">
+              <div class="experience-title-group">
+                <h3 class="experience-title">Freelance Developer</h3>
+                <p class="company">Self-Employed</p>
+              </div>
+              <span class="period">Jul 2017 - Jul 2018</span>
+            </div>
+            <ul class="experience-details">
+              <li>Delivered bespoke systems for ProOffice, Rocket Integration Technology, and HS Management Services</li>
+              <li>Built UiTM apps: bus tracking, home rental, autism emotion recognition, library scanner</li>
+              <li>Developed KKM patient system and government-linked applications</li>
             </ul>
           </div>
 
@@ -54,15 +132,15 @@
             <div class="experience-header">
               <div class="experience-title-group">
                 <h3 class="experience-title">Junior Web Developer</h3>
-                <p class="company">StartUp Ventures</p>
+                <p class="company">Vialing Sdn Bhd</p>
               </div>
-              <span class="period">2018 - 2020</span>
+              <span class="period">Feb 2017 - Jul 2017</span>
             </div>
             <ul class="experience-details">
-              <li>Built responsive websites using HTML, CSS, and JavaScript</li>
-              <li>Integrated third-party APIs and services</li>
-              <li>Assisted in database design and management</li>
-              <li>Participated in agile development practices</li>
+              <li>Maintained and enhanced Campus Management System</li>
+              <li>Upgraded system from CodeIgniter to Laravel 5</li>
+              <li>Supported deployment for Xiamen University</li>
+              <li>Handled bug fixes and support tickets</li>
             </ul>
           </div>
         </div>
@@ -74,38 +152,57 @@
           <div class="skill-category">
             <h3 class="skill-category-title">Frontend</h3>
             <div class="skill-tags">
+              <span class="skill-tag">Angular</span>
               <span class="skill-tag">React</span>
               <span class="skill-tag">Vue.js</span>
               <span class="skill-tag">TypeScript</span>
-              <span class="skill-tag">HTML/CSS</span>
-              <span class="skill-tag">Tailwind CSS</span>
+              <span class="skill-tag">JavaScript</span>
+              <span class="skill-tag">Ionic</span>
             </div>
           </div>
           <div class="skill-category">
             <h3 class="skill-category-title">Backend</h3>
             <div class="skill-tags">
               <span class="skill-tag">Node.js</span>
-              <span class="skill-tag">Python</span>
               <span class="skill-tag">Express</span>
+              <span class="skill-tag">TypeScript</span>
+              <span class="skill-tag">LoopBack</span>
               <span class="skill-tag">PostgreSQL</span>
-              <span class="skill-tag">MongoDB</span>
+              <span class="skill-tag">DynamoDB</span>
+              <span class="skill-tag">RDS</span>
+            </div>
+          </div>
+          <div class="skill-category">
+            <h3 class="skill-category-title">Cloud &amp; DevOps</h3>
+            <div class="skill-tags">
+              <span class="skill-tag">AWS</span>
+              <span class="skill-tag">ECS/Fargate</span>
+              <span class="skill-tag">Lambda</span>
+              <span class="skill-tag">API Gateway</span>
+              <span class="skill-tag">Docker</span>
+              <span class="skill-tag">Terraform</span>
+              <span class="skill-tag">GitLab CI/CD</span>
+              <span class="skill-tag">TeamCity</span>
             </div>
           </div>
           <div class="skill-category">
             <h3 class="skill-category-title">Tools &amp; Others</h3>
             <div class="skill-tags">
               <span class="skill-tag">Git</span>
-              <span class="skill-tag">Docker</span>
-              <span class="skill-tag">AWS</span>
-              <span class="skill-tag">CI/CD</span>
-              <span class="skill-tag">Agile/Scrum</span>
+              <span class="skill-tag">Nginx</span>
+              <span class="skill-tag">OAuth2</span>
+              <span class="skill-tag">Kibana</span>
+              <span class="skill-tag">OpenSearch</span>
+              <span class="skill-tag">CloudWatch</span>
+              <span class="skill-tag">Google Cloud</span>
+              <span class="skill-tag">Vertex AI</span>
             </div>
           </div>
         </div>
       </section>
 
       <section class="section contact">
-        <h2 class="section-title">Get In Touch</h2>
+         <h2 class="section-title-github">Get In Touch</h2>
         <div class="contact-links">
           <a
             href="https://github.com/SyafiqTM"
@@ -121,7 +218,7 @@
             GitHub
           </a>
           <a
-            href="https://linkedin.com/in/syafiq"
+            href="https://linkedin.com/in/syafiq-zahir"
             class="contact-link"
             target="_blank"
             rel="noopener noreferrer"
