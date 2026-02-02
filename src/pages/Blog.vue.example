@@ -1,3 +1,5 @@
+// Example: Updated Blog.vue using the composable and API calls
+
 <template>
   <div class="min-h-screen bg-gray-50 py-12 px-4">
     <div class="max-w-7xl mx-auto">
@@ -16,6 +18,7 @@
             type="text"
             placeholder="Search posts..."
             v-model="searchQuery"
+            @input="debouncedSearch"
             class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
           />
         </div>
@@ -23,7 +26,7 @@
         <!-- Topic Filter -->
         <div class="flex flex-wrap gap-2">
           <button
-            @click="selectedTopic = 'All'"
+            @click="selectedTopic = 'All'; fetchPosts()"
             :class="`px-4 py-2 rounded-lg font-medium transition-colors ${
               selectedTopic === 'All'
                 ? 'bg-blue-600 text-white'
@@ -35,7 +38,7 @@
           <button
             v-for="topic in allTopics"
             :key="topic"
-            @click="selectedTopic = topic"
+            @click="selectedTopic = topic; fetchPosts()"
             :class="`px-4 py-2 rounded-lg font-medium transition-colors ${
               selectedTopic === topic
                 ? 'bg-blue-600 text-white'
@@ -55,7 +58,7 @@
       <!-- Error State -->
       <div v-else-if="error" class="bg-red-50 border border-red-200 rounded-lg p-6 mb-8">
         <div class="flex items-center gap-2 mb-2">
-          <span class="text-red-600 text-lg">⚠️</span>
+          <AlertCircle :size="20" class="text-red-600" />
           <h3 class="text-red-800 font-semibold">Error Loading Posts</h3>
         </div>
         <p class="text-red-700 mb-4">{{ error }}</p>
@@ -77,47 +80,47 @@
 
         <!-- Blog Cards Grid -->
         <div v-if="posts.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-        <div
-          v-for="post in posts"
-          :key="post.id"
-          class="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-gray-200 cursor-pointer"
-          @click="$router.push(`/blog/${post.id}`)"
-        >
-          <div class="p-6">
-            <div class="flex items-center gap-2 mb-3">
-              <span class="px-3 py-1 bg-blue-100 text-blue-700 text-sm font-medium rounded-full">
-                {{ post.category }}
-              </span>
-              <span class="text-gray-500 text-sm flex items-center gap-1">
-                <Calendar :size="14" />
-                {{ formatDate(post.date) }}
-              </span>
-            </div>
-
-            <h3 class="text-xl font-bold text-gray-900 mb-2 hover:text-blue-600 cursor-pointer" @click="$router.push(`/blog/${post.id}`)">
-              {{ post.title }}
-            </h3>
-
-            <p class="text-gray-600 mb-4 line-clamp-2">
-              {{ post.excerpt }}
-            </p>
-
-            <div class="flex items-center justify-between">
-              <div class="flex flex-wrap gap-2">
-                <span
-                  v-for="(topic, idx) in post.topics.slice(0, 3)"
-                  :key="idx"
-                  class="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded"
-                >
-                  <Tag :size="12" />
-                  {{ topic }}
+          <div
+            v-for="post in posts"
+            :key="post.id"
+            class="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-gray-200 cursor-pointer"
+            @click="$router.push(`/blog/${post.id}`)"
+          >
+            <div class="p-6">
+              <div class="flex items-center gap-2 mb-3">
+                <span class="px-3 py-1 bg-blue-100 text-blue-700 text-sm font-medium rounded-full">
+                  {{ post.category }}
+                </span>
+                <span class="text-gray-500 text-sm flex items-center gap-1">
+                  <Calendar :size="14" />
+                  {{ formatDate(post.date) }}
                 </span>
               </div>
-              <span class="text-sm text-gray-500">{{ post.readTime }}</span>
+
+              <h3 class="text-xl font-bold text-gray-900 mb-2 hover:text-blue-600">
+                {{ post.title }}
+              </h3>
+
+              <p class="text-gray-600 mb-4 line-clamp-2">
+                {{ post.excerpt }}
+              </p>
+
+              <div class="flex items-center justify-between">
+                <div class="flex flex-wrap gap-2">
+                  <span
+                    v-for="(topic, idx) in post.topics.slice(0, 3)"
+                    :key="idx"
+                    class="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded"
+                  >
+                    <Tag :size="12" />
+                    {{ topic }}
+                  </span>
+                </div>
+                <span class="text-sm text-gray-500">{{ post.readTime }}</span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
         <div v-else class="text-center py-16">
           <p class="text-gray-500 text-lg">No posts found matching your criteria.</p>
@@ -128,29 +131,29 @@
           <button
             @click="changePage(currentPage - 1)"
             :disabled="currentPage === 1"
-          class="p-2 rounded-lg border border-gray-300 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          <ChevronLeft :size="20" />
-        </button>
+            class="p-2 rounded-lg border border-gray-300 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <ChevronLeft :size="20" />
+          </button>
 
           <button
             v-for="pageNum in totalPages"
             :key="pageNum"
             @click="changePage(pageNum)"
-          :class="`px-4 py-2 rounded-lg font-medium transition-colors ${
-            currentPage === pageNum
-              ? 'bg-blue-600 text-white'
-              : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300'
-          }`"
-        >
-          {{ pageNum }}
-        </button>
+            :class="`px-4 py-2 rounded-lg font-medium transition-colors ${
+              currentPage === pageNum
+                ? 'bg-blue-600 text-white'
+                : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300'
+            }`"
+          >
+            {{ pageNum }}
+          </button>
 
           <button
             @click="changePage(currentPage + 1)"
             :disabled="currentPage === totalPages"
-          class="p-2 rounded-lg border border-gray-300 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
+            class="p-2 rounded-lg border border-gray-300 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
             <ChevronRight :size="20" />
           </button>
         </div>
@@ -160,9 +163,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue'
-import { Search, Calendar, Tag, ChevronLeft, ChevronRight } from 'lucide-vue-next'
+import { ref, computed, watch, onMounted } from 'vue'
+import { Search, Calendar, Tag, ChevronLeft, ChevronRight, AlertCircle } from 'lucide-vue-next'
 import { useBlogList, useTopics } from '../composables/useBlog'
+import { useDebounceFn } from '@vueuse/core'
 
 // Use composables
 const { posts, loading, error, totalPages, currentPage, fetchPosts, refresh } = useBlogList()
@@ -172,50 +176,45 @@ const { topics: allTopics, fetchTopics } = useTopics()
 const searchQuery = ref('')
 const selectedTopic = ref('All')
 const POSTS_PER_PAGE = 6
-let searchTimeout = null
 
 // Fetch initial data
 onMounted(async () => {
   await Promise.all([
-    loadPosts(),
+    fetchPosts({ page: 1, limit: POSTS_PER_PAGE }),
     fetchTopics()
   ])
 })
 
+// Debounced search
+const debouncedSearch = useDebounceFn(() => {
+  loadPosts()
+}, 300)
+
 // Load posts with filters
 const loadPosts = async () => {
   await fetchPosts({
-    page: currentPage.value,
+    page: 1,
     limit: POSTS_PER_PAGE,
     search: searchQuery.value || undefined,
     topic: selectedTopic.value !== 'All' ? selectedTopic.value : undefined
   })
 }
 
-// Watch for search input with debounce
-watch(searchQuery, () => {
-  clearTimeout(searchTimeout)
-  searchTimeout = setTimeout(() => {
-    currentPage.value = 1
-    loadPosts()
-  }, 300)
-})
-
-// Watch for topic change
-watch(selectedTopic, () => {
-  currentPage.value = 1
-  loadPosts()
-})
-
 // Change page
 const changePage = async (page) => {
   if (page < 1 || page > totalPages.value) return
-  currentPage.value = page
-  await loadPosts()
+  
+  await fetchPosts({
+    page,
+    limit: POSTS_PER_PAGE,
+    search: searchQuery.value || undefined,
+    topic: selectedTopic.value !== 'All' ? selectedTopic.value : undefined
+  })
+  
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
-// Helpers
+// Format date
 const formatDate = (dateString) => {
   return new Date(dateString).toLocaleDateString('en-US', {
     month: 'short',
