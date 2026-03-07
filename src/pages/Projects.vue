@@ -103,6 +103,15 @@ const projects = [
       'A vision & educational platform for children — gamified learning with interactive content and a parent dashboard.',
     stack: ['React', 'Node.js', 'AWS', 'TypeScript'],
   },
+  {
+    name: 'Property Malaysia',
+    category: 'Real Estate',
+    url: 'https://property-malaysia.vercel.app/',
+    emoji: '🏘️',
+    summary:
+      'A property listings platform for browsing high-rise condominiums & landed homes across Malaysia, with advanced search and filter.',
+    stack: ['React', 'Vercel', 'Real Estate', 'Search UI'],
+  },
 ]
 </script>
 

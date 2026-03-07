@@ -16,36 +16,94 @@
     <!-- Controls -->
     <section class="blog-controls-section">
       <div class="blog-shell">
-        <!-- Search -->
-        <div class="search-wrap">
-          <Search class="search-icon" :size="18" />
-          <input
-            type="text"
-            placeholder="Search posts..."
-            v-model="searchQuery"
-            class="search-input"
-          />
+        <!-- Search row -->
+        <div class="search-row">
+          <div class="search-wrap">
+            <Search class="search-icon" :size="18" />
+            <input
+              type="text"
+              placeholder="Search by title, topic or category..."
+              v-model="searchQuery"
+              class="search-input"
+            />
+          </div>
         </div>
 
-        <!-- Topic Filter -->
-        <div class="topic-filters">
+        <!-- Filter bar -->
+        <div class="filter-bar">
+          <!-- Filters toggle button -->
+          <button class="filters-toggle" @click="filterPanelOpen = !filterPanelOpen">
+            <SlidersHorizontal :size="15" />
+            Filters
+            <span v-if="selectedTopics.length" class="filter-badge">{{ selectedTopics.length }}</span>
+          </button>
+
+          <div class="filter-divider"></div>
+
+          <!-- Quick pills: first 5 topics -->
           <button
-            @click="selectedTopic = 'All'"
-            :class="['topic-btn', selectedTopic === 'All' ? 'active' : '']"
+            @click="toggleTopic('All')"
+            :class="['filter-pill', selectedTopics.length === 0 ? 'active' : '']"
           >
             All Topics
           </button>
           <button
-            v-for="topic in allTopics"
+            v-for="topic in allTopics.slice(0, 5)"
             :key="topic"
-            @click="selectedTopic = topic"
-            :class="['topic-btn', selectedTopic === topic ? 'active' : '']"
+            @click="toggleTopic(topic)"
+            :class="['filter-pill', selectedTopics.includes(topic) ? 'active' : '']"
           >
             {{ topic }}
           </button>
+
+          <!-- Result count (right side) -->
+          <span class="filter-count" v-if="!loading">
+            {{ posts.length }} {{ posts.length === 1 ? 'post' : 'posts' }} found
+          </span>
+        </div>
+
+        <!-- Clear active filters row -->
+        <div v-if="selectedTopics.length" class="active-filters">
+          <span
+            v-for="t in selectedTopics"
+            :key="t"
+            class="active-chip"
+          >
+            {{ t }}
+            <button class="remove-chip" @click="toggleTopic(t)">×</button>
+          </span>
+          <button class="clear-all" @click="selectedTopics = []">Clear all</button>
         </div>
       </div>
     </section>
+
+    <!-- Filter popup -->
+    <Teleport to="body">
+      <div v-if="filterPanelOpen" class="filter-backdrop" @click.self="filterPanelOpen = false">
+        <div class="filter-panel">
+          <div class="filter-panel-header">
+            <span class="filter-panel-title">Filter by Topics</span>
+            <button class="filter-panel-close" @click="filterPanelOpen = false">×</button>
+          </div>
+          <p class="filter-panel-hint">Select multiple topics to combine results.</p>
+          <div class="filter-panel-grid">
+            <button
+              v-for="topic in allTopics"
+              :key="topic"
+              @click="toggleTopic(topic)"
+              :class="['panel-topic-btn', selectedTopics.includes(topic) ? 'active' : '']"
+            >
+              <span class="panel-check">{{ selectedTopics.includes(topic) ? '✓' : '' }}</span>
+              {{ topic }}
+            </button>
+          </div>
+          <div class="filter-panel-footer">
+            <button class="panel-clear" @click="selectedTopics = []">Clear all</button>
+            <button class="panel-apply" @click="filterPanelOpen = false">Apply {{ selectedTopics.length ? `(${selectedTopics.length})` : '' }}</button>
+          </div>
+        </div>
+      </div>
+    </Teleport>
 
     <!-- Main Content -->
     <section class="blog-grid-section">
@@ -68,10 +126,7 @@
 
         <!-- Posts -->
         <template v-else>
-          <p class="results-count">
-            Showing {{ posts.length }} {{ posts.length === 1 ? 'post' : 'posts' }}
-            <span v-if="selectedTopic !== 'All'"> in {{ selectedTopic }}</span>
-          </p>
+
 
           <div v-if="posts.length > 0" class="blog-grid">
             <article
@@ -151,8 +206,11 @@
 
 <script setup>
 import { ref, onMounted, watch } from 'vue'
-import { Search, Calendar, ChevronLeft, ChevronRight } from 'lucide-vue-next'
+import { useRoute } from 'vue-router'
+import { Search, Calendar, ChevronLeft, ChevronRight, SlidersHorizontal } from 'lucide-vue-next'
 import { useBlogList, useTopics } from '../composables/useBlog'
+
+const route = useRoute()
 
 // Use composables
 const { posts, loading, error, totalPages, currentPage, fetchPosts, refresh } = useBlogList()
@@ -160,12 +218,31 @@ const { topics: allTopics, fetchTopics } = useTopics()
 
 // Local state
 const searchQuery = ref('')
-const selectedTopic = ref('All')
+const selectedTopics = ref([])   // multi-select array
+const filterPanelOpen = ref(false)
 const POSTS_PER_PAGE = 6
 let searchTimeout = null
 
+// Toggle a topic in/out of selectedTopics
+const toggleTopic = (topic) => {
+  if (topic === 'All') {
+    selectedTopics.value = []
+    return
+  }
+  const idx = selectedTopics.value.indexOf(topic)
+  if (idx === -1) {
+    selectedTopics.value = [...selectedTopics.value, topic]
+  } else {
+    selectedTopics.value = selectedTopics.value.filter(t => t !== topic)
+  }
+}
+
 // Fetch initial data
 onMounted(async () => {
+  // Pre-select topic coming from BlogDetail topic click
+  if (route.query.topic) {
+    selectedTopics.value = [route.query.topic]
+  }
   await Promise.all([
     loadPosts(),
     fetchTopics()
@@ -174,11 +251,12 @@ onMounted(async () => {
 
 // Load posts with filters
 const loadPosts = async () => {
+  // Pass the first selected topic for API filtering; client-side multi-filter applied below
   await fetchPosts({
     page: currentPage.value,
     limit: POSTS_PER_PAGE,
     search: searchQuery.value || undefined,
-    topic: selectedTopic.value !== 'All' ? selectedTopic.value : undefined
+    topic: selectedTopics.value.length === 1 ? selectedTopics.value[0] : undefined
   })
 }
 
@@ -191,11 +269,11 @@ watch(searchQuery, () => {
   }, 300)
 })
 
-// Watch for topic change
-watch(selectedTopic, () => {
+// Watch for topic changes
+watch(selectedTopics, () => {
   currentPage.value = 1
   loadPosts()
-})
+}, { deep: true })
 
 // Change page
 const changePage = async (page) => {
@@ -272,12 +350,16 @@ const formatDate = (dateString) => {
 
 /* ── Controls ── */
 .blog-controls-section {
-  padding: 0.5rem 0 2rem;
+  padding: 0.5rem 0 1.5rem;
+}
+
+/* ── Search row ── */
+.search-row {
+  margin-bottom: 1rem;
 }
 
 .search-wrap {
   position: relative;
-  margin-bottom: 1.25rem;
 }
 
 .search-icon {
@@ -310,34 +392,286 @@ const formatDate = (dateString) => {
   border-color: rgba(63, 255, 192, 0.4);
 }
 
-.topic-filters {
+/* ── Filter bar ── */
+.filter-bar {
   display: flex;
-  flex-wrap: wrap;
+  align-items: center;
   gap: 0.55rem;
+  padding: 0.65rem 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  flex-wrap: wrap;
 }
 
-.topic-btn {
-  padding: 0.45rem 1rem;
+.filters-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.42rem 0.9rem;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  color: rgba(226, 232, 240, 0.72);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #e2e8f0;
   font-size: 0.82rem;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
-  transition: background 0.2s, border-color 0.2s, color 0.2s;
+  transition: background 0.2s, border-color 0.2s;
+  position: relative;
 }
 
-.topic-btn:hover {
+.filters-toggle:hover {
   background: rgba(63, 255, 192, 0.08);
   border-color: rgba(63, 255, 192, 0.22);
   color: #72f5cd;
 }
 
-.topic-btn.active {
-  background: rgba(63, 255, 192, 0.12);
-  border-color: rgba(63, 255, 192, 0.35);
+.filter-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: #3fffc0;
+  color: #0d1117;
+  font-size: 0.68rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.filter-divider {
+  width: 1px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
+}
+
+.filter-pill {
+  padding: 0.42rem 0.9rem;
+  border-radius: 999px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  color: rgba(226, 232, 240, 0.7);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.18s, border-color 0.18s, color 0.18s;
+  white-space: nowrap;
+}
+
+.filter-pill:hover {
+  background: rgba(63, 255, 192, 0.07);
+  border-color: rgba(63, 255, 192, 0.22);
   color: #72f5cd;
+}
+
+.filter-pill.active {
+  background: #3fffc0;
+  border-color: #3fffc0;
+  color: #0d1117;
+  font-weight: 700;
+}
+
+.filter-count {
+  margin-left: auto;
+  font-size: 0.8rem;
+  color: rgba(99, 217, 176, 0.82);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* ── Active filters row ── */
+.active-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.active-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.55rem 0.3rem 0.8rem;
+  border-radius: 999px;
+  background: rgba(63, 255, 192, 0.1);
+  border: 1px solid rgba(63, 255, 192, 0.28);
+  color: #72f5cd;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.remove-chip {
+  background: none;
+  border: none;
+  color: #72f5cd;
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  padding: 0;
+  opacity: 0.7;
+  transition: opacity 0.15s;
+}
+
+.remove-chip:hover {
+  opacity: 1;
+}
+
+.clear-all {
+  background: none;
+  border: none;
+  color: rgba(148, 163, 184, 0.6);
+  font-size: 0.78rem;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+  transition: color 0.15s;
+}
+
+.clear-all:hover {
+  color: #f8fafc;
+}
+
+/* ── Filter popup ── */
+.filter-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.filter-panel {
+  width: min(520px, 92vw);
+  background: #111827;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 1.75rem;
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.5);
+}
+
+.filter-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.4rem;
+}
+
+.filter-panel-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+.filter-panel-close {
+  background: none;
+  border: none;
+  color: rgba(148, 163, 184, 0.7);
+  font-size: 1.4rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0.2rem;
+  transition: color 0.15s;
+}
+
+.filter-panel-close:hover {
+  color: #f8fafc;
+}
+
+.filter-panel-hint {
+  margin: 0 0 1.25rem;
+  font-size: 0.82rem;
+  color: rgba(148, 163, 184, 0.6);
+}
+
+.filter-panel-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin-bottom: 1.5rem;
+}
+
+.panel-topic-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 1rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  color: rgba(226, 232, 240, 0.75);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.18s, border-color 0.18s, color 0.18s;
+}
+
+.panel-topic-btn:hover {
+  background: rgba(63, 255, 192, 0.08);
+  border-color: rgba(63, 255, 192, 0.22);
+  color: #72f5cd;
+}
+
+.panel-topic-btn.active {
+  background: rgba(63, 255, 192, 0.13);
+  border-color: rgba(63, 255, 192, 0.4);
+  color: #3fffc0;
+}
+
+.panel-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.filter-panel-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.panel-clear {
+  background: none;
+  border: none;
+  color: rgba(148, 163, 184, 0.65);
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  transition: color 0.15s, background 0.15s;
+}
+
+.panel-clear:hover {
+  color: #f8fafc;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.panel-apply {
+  padding: 0.6rem 1.4rem;
+  border-radius: 10px;
+  background: #3fffc0;
+  border: none;
+  color: #0d1117;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.panel-apply:hover {
+  background: #22e5ab;
 }
 
 /* ── Grid ── */
