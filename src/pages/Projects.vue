@@ -112,6 +112,15 @@ const projects = [
       'A time tracking app to log and monitor daily activities, helping users stay productive and gain insights into how their time is spent.',
     stack: ['React', 'Time Tracking', 'Dashboard', 'Vercel'],
   },
+  {
+    name: 'Property Malaysia',
+    category: 'Real Estate',
+    url: 'https://property-malaysia.vercel.app/',
+    emoji: '🏡',
+    summary:
+      'A property agent platform for browsing and listing real estate in Malaysia, with a clean interface for buyers and agents alike.',
+    stack: ['React', 'Real Estate', 'Listings', 'Vercel'],
+  },
 ]
 </script>
 
