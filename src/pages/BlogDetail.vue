@@ -136,20 +136,20 @@
       </div>
 
       <!-- Navigation -->
-      <div class="mt-12 flex justify-between items-center">
+      <div class="mt-12 flex flex-col sm:flex-row gap-3 sm:justify-between sm:items-center">
         <router-link 
           to="/blog"
-          class="flex items-center gap-2 px-6 py-3 bg-white border-2 border-gray-300 text-gray-700 rounded-lg font-medium hover:border-blue-600 hover:text-blue-600 transition-colors"
+          class="flex items-center justify-center gap-2 px-6 py-3 bg-white border-2 border-gray-300 text-gray-700 rounded-lg font-medium hover:border-blue-600 hover:text-blue-600 transition-colors w-full sm:w-auto"
         >
           <ChevronLeft :size="20" />
           Back to All Posts
         </router-link>
 
         <!-- Share Button + Dropdown -->
-        <div class="relative" ref="shareMenuRef">
+        <div class="relative w-full sm:w-auto" ref="shareMenuRef">
           <button
             @click.stop="showShareMenu = !showShareMenu"
-            class="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+            class="flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors w-full sm:w-auto"
           >
             <Share2 :size="18" />
             Share Article
@@ -166,7 +166,7 @@
           >
             <div
               v-if="showShareMenu"
-              class="absolute bottom-14 right-0 bg-white rounded-xl shadow-xl border border-gray-200 py-2 w-52 z-50 origin-bottom-right"
+              class="absolute bottom-14 left-0 right-0 sm:left-auto sm:right-0 sm:w-52 bg-white rounded-xl shadow-xl border border-gray-200 py-2 z-50 origin-bottom-right"
             >
               <!-- Instagram Story -->
               <button
@@ -272,14 +272,60 @@ const handleOutsideClick = (e) => {
   }
 }
 
+// Update document meta tags for social sharing
+const updateMeta = (postData) => {
+  if (!postData) return
+  const title = `${postData.title} | Syafiq`
+  const description = postData.excerpt || 'Read this article on syafiq.vercel.app'
+  const url = window.location.href
+
+  document.title = title
+
+  const setMeta = (selector, attr, value) => {
+    let el = document.querySelector(selector)
+    if (!el) {
+      el = document.createElement('meta')
+      const [attrName, attrVal] = selector.replace('[', '').replace(']', '').split('=')
+      el.setAttribute(attrName.trim(), attrVal.replace(/"/g, '').trim())
+      document.head.appendChild(el)
+    }
+    el.setAttribute(attr, value)
+  }
+
+  setMeta('meta[property="og:title"]', 'content', title)
+  setMeta('meta[property="og:description"]', 'content', description)
+  setMeta('meta[property="og:url"]', 'content', url)
+  setMeta('meta[property="og:type"]', 'content', 'article')
+  setMeta('meta[name="twitter:title"]', 'content', title)
+  setMeta('meta[name="twitter:description"]', 'content', description)
+  setMeta('meta[name="description"]', 'content', description)
+}
+
+const resetMeta = () => {
+  document.title = 'Syafiq - Web Developer'
+  const reset = (selector, value) => {
+    const el = document.querySelector(selector)
+    if (el) el.setAttribute('content', value)
+  }
+  const defaultDesc = 'Full-stack developer and cloud engineer sharing articles on DevOps, cloud, and software engineering.'
+  reset('meta[property="og:title"]', 'Syafiq - Web Developer')
+  reset('meta[property="og:description"]', defaultDesc)
+  reset('meta[property="og:url"]', 'https://syafiq.vercel.app')
+  reset('meta[name="twitter:title"]', 'Syafiq - Web Developer')
+  reset('meta[name="twitter:description"]', defaultDesc)
+  reset('meta[name="description"]', defaultDesc)
+}
+
 // Fetch post on mount and when route changes
 onMounted(async () => {
   await fetchPost(route.params.id)
+  updateMeta(post.value)
   document.addEventListener('click', handleOutsideClick)
 })
 
 onUnmounted(() => {
   document.removeEventListener('click', handleOutsideClick)
+  resetMeta()
 })
 
 // Watch for route param changes (when navigating between different blog posts)
@@ -288,10 +334,16 @@ watch(
   async (newId) => {
     if (newId) {
       await fetchPost(newId)
+      updateMeta(post.value)
       window.scrollTo({ top: 0, behavior: 'smooth' })
     }
   }
 )
+
+// Also watch post data to catch when it loads asynchronously
+watch(post, (newPost) => {
+  if (newPost) updateMeta(newPost)
+})
 
 const formatDate = (dateString) => {
   return new Date(dateString).toLocaleDateString('en-US', {
