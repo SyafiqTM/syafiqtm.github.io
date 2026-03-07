@@ -1,57 +1,11 @@
 <template>
-  <nav
-    :class="`sticky top-0 z-50 transition-all duration-300 ${
-      isScrolled
-        ? 'bg-white shadow-md border-b border-gray-200'
-        : 'navbar-gradient backdrop-blur-md border-b border-white/30'
-    }`"
-  >
-    <div class="max-w-7xl mx-auto px-4">
-      <div class="flex items-center justify-between h-16">
-        <!-- Logo/Home Link -->
-        <router-link
-          to="/"
-          :class="`flex items-center gap-2 font-bold text-xl transition-colors ${
-            isScrolled ? 'text-blue-600 hover:text-blue-700' : 'text-white hover:text-blue-200'
-          }`"
-        >
-        </router-link>
-
-        <!-- Navigation Links -->
-        <div class="flex items-center gap-6">
-          <router-link
-            to="/"
-            :class="`font-medium transition-colors ${
-              isScrolled
-                ? 'text-gray-600 hover:text-blue-600'
-                : 'text-white hover:text-blue-200'
-            } ${
-              route.path === '/' && isScrolled
-                ? 'text-blue-600 border-b-2 border-blue-600'
-                : route.path === '/' && !isScrolled
-                ? 'text-blue-200 border-b-2 border-blue-200'
-                : ''
-            }`"
-          >
-            Portfolio
-          </router-link>
-          <router-link
-            to="/blog"
-            :class="`font-medium transition-colors ${
-              isScrolled
-                ? 'text-gray-600 hover:text-blue-600'
-                : 'text-white hover:text-blue-200'
-            } ${
-              route.path === '/blog' && isScrolled
-                ? 'text-blue-600 border-b-2 border-blue-600'
-                : route.path === '/blog' && !isScrolled
-                ? 'text-blue-200 border-b-2 border-blue-200'
-                : ''
-            }`"
-          >
-            Blog
-          </router-link>
-        </div>
+  <nav :class="['nav-root', { 'is-scrolled': isScrolled }]">
+    <div class="nav-inner">
+      <router-link to="/" class="nav-logo"></router-link>
+      <div class="nav-links">
+        <router-link to="/" :class="linkClass('/')">ABOUT</router-link>
+        <router-link to="/projects" :class="linkClass('/projects')">PROJECTS</router-link>
+        <router-link to="/blog" :class="linkClass('/blog')">BLOG</router-link>
       </div>
     </div>
   </nav>
@@ -65,20 +19,95 @@ const route = useRoute()
 const isScrolled = ref(false)
 
 const handleScroll = () => {
-  isScrolled.value = window.scrollY > 100
+  isScrolled.value = window.scrollY > 60
 }
 
-onMounted(() => {
-  window.addEventListener('scroll', handleScroll)
-})
+const linkClass = (path) => [
+  'nav-link',
+  {
+    'is-active': route.path === path,
+  },
+]
 
-onUnmounted(() => {
-  window.removeEventListener('scroll', handleScroll)
-})
+onMounted(() => window.addEventListener('scroll', handleScroll))
+onUnmounted(() => window.removeEventListener('scroll', handleScroll))
 </script>
 
 <style scoped>
-.navbar-gradient {
-  background: linear-gradient(135deg, rgba(37, 99, 235, 0.8) 0%, rgba(30, 64, 175, 0.8) 100%);
+.nav-root {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  transition: background 0.3s, border-color 0.3s;
+  background: transparent;
+  border-bottom: 1px solid transparent;
+}
+
+.nav-root.is-scrolled {
+  background: rgba(13, 17, 23, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+.nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  height: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-logo {
+  font-weight: 700;
+  font-size: 0.9375rem;
+  letter-spacing: 0.2em;
+  color: #fff;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.nav-logo:hover {
+  color: #3fffc0;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.nav-link {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #9ca3af;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.nav-link:hover {
+  color: #fff;
+}
+
+.nav-link.is-active {
+  color: #3fffc0;
+}
+
+.nav-link.is-active:hover {
+  color: #22e5ab;
+}
+
+@media (max-width: 640px) {
+  .nav-links {
+    gap: 1rem;
+  }
+
+  .nav-link {
+    font-size: 0.65rem;
+  }
 }
 </style>
