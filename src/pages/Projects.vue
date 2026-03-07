@@ -104,13 +104,13 @@ const projects = [
     stack: ['React', 'Node.js', 'AWS', 'TypeScript'],
   },
   {
-    name: 'Property Malaysia',
-    category: 'Real Estate',
-    url: 'https://property-malaysia.vercel.app/',
-    emoji: '🏘️',
+    name: 'Activity Tracker',
+    category: 'Productivity',
+    url: 'https://activity-tracker-ruby-sigma.vercel.app/',
+    emoji: '⏱️',
     summary:
-      'A property listings platform for browsing high-rise condominiums & landed homes across Malaysia, with advanced search and filter.',
-    stack: ['React', 'Vercel', 'Real Estate', 'Search UI'],
+      'A time tracking app to log and monitor daily activities, helping users stay productive and gain insights into how their time is spent.',
+    stack: ['React', 'Time Tracking', 'Dashboard', 'Vercel'],
   },
 ]
 </script>
