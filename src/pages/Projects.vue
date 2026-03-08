@@ -121,6 +121,24 @@ const projects = [
       'A property agent platform for browsing and listing real estate in Malaysia, with a clean interface for buyers and agents alike.',
     stack: ['React', 'Real Estate', 'Listings', 'Vercel'],
   },
+  {
+    name: 'Workshop Finder',
+    category: 'Directory / Search',
+    url: 'https://workshop-finder.vercel.app/',
+    emoji: '🔧',
+    summary:
+      'A workshop discovery platform that helps users find and explore workshops near them, with a clean search and filtering experience.',
+    stack: ['React', 'Search', 'Directory', 'Vercel'],
+  },
+  {
+    name: 'Kawaii Chat',
+    category: 'Messaging / Social',
+    url: 'https://kawaiichat.vercel.app/',
+    emoji: '💬',
+    summary:
+      'A cute and expressive real-time chat application with a kawaii-inspired design, bringing personality and fun to everyday conversations.',
+    stack: ['React', 'Real-time', 'Chat', 'Vercel'],
+  },
 ]
 </script>
 
