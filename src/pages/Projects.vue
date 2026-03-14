@@ -77,9 +77,9 @@ const loaded = ref({})
 
 const projects = [
   {
-    name: 'Sneaker React CMS',
-    category: 'Inventory Manager',
-    url: 'https://sneaker-react-cms.vercel.app/',
+    name: 'Sneakers Stock Manager',
+    category: 'Ecommerce / Inventory',
+    url: 'https://my-sneekerz.vercel.app/',
     emoji: '👟',
     summary:
       'A sneaker inventory management interface with a guided entry flow, built to organize stock and simplify store-side operations.',
@@ -138,6 +138,24 @@ const projects = [
     summary:
       'A cute and expressive real-time chat application with a kawaii-inspired design, bringing personality and fun to everyday conversations.',
     stack: ['React', 'Real-time', 'Chat', 'Vercel'],
+  },
+  {
+    name: 'Walevo Swim Academy',
+    category: 'Sports / Education',
+    url: 'https://walevo-swimacademy.vercel.app/',
+    emoji: '🏊',
+    summary:
+      'A swim academy platform for browsing classes, managing schedules, and registering swimmers — designed to streamline operations for coaches and students alike.',
+    stack: ['React', 'Sports', 'Booking', 'Vercel'],
+  },
+  {
+    name: 'HEIC to JPG',
+    category: 'Utility / Converter',
+    url: 'https://my-heictojpg.vercel.app/',
+    emoji: '🖼️',
+    summary:
+      'A fast, browser-based tool for converting HEIC image files to JPG format — no uploads, no installs, just instant conversion right in the browser.',
+    stack: ['React', 'File Conversion', 'Browser API', 'Vercel'],
   },
 ]
 </script>
